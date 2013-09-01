@@ -69,15 +69,15 @@ group :development, :test do
   gem "rspec-rails", "~> 2.13.2"
   gem "shoulda", "~> 3.5.0"
   gem "database_cleaner", "~> 1.1.1"
-  
+
   # Capybara and Poltergeist
   gem "capybara", "~> 2.1.0"
   gem "poltergeist", "~> 1.3.0"
   gem "launchy", "~> 2.3.0"
-  
+
   #Factory Girl instead of Fixtures
   gem "factory_girl_rails", "~> 4.0"
-  
+
   gem 'debugger'
 end
 
@@ -85,12 +85,12 @@ group :development do
   #Guard Goodies
   gem "guard-bundler", "~> 1.0.0"
   gem "guard-rspec", "~> 3.0.2"
-  
+
   #Spork and related guard
   gem 'spork-rails', github: 'railstutorial/spork-rails'
   gem 'guard-spork', '1.5.0'
   gem 'childprocess', '0.3.6'
-  
+
   # Guard and LiveReload - Install LiveReload Chrome Extension as well
   gem "guard-livereload", "~> 1.4.0"
   gem "growl", "~> 1.0.3"
@@ -99,7 +99,7 @@ group :development do
   gem "better_errors", "~> 0.9.0"
   gem "binding_of_caller", "~> 0.7.2"
   gem "meta_request", "~> 0.2.6"
-  
+
   # Quiet assets turn off rails assets log
   gem "quiet_assets", "~> 1.0.2"
 end
@@ -127,6 +127,3 @@ gem "awesome_print", "~> 1.1.0"
 
 # DateTime manipulation
 gem "chronic", "~> 0.10.1"
-
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
