@@ -48,7 +48,7 @@ gem "ransack", "~> 1.0.0"
 
 # Administration - Temporary github refs until rails 4 compatible releases
 gem 'inherited_resources', github: 'josevalim/inherited_resources'
-gem 'activeadmin',         github: 'gregbell/active_admin', branch: 'rails4'
+gem 'activeadmin',         github: 'gregbell/active_admin'
 gem 'formtastic',          github: 'justinfrench/formtastic'
 
 #Forms
