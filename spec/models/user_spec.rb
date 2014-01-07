@@ -11,9 +11,7 @@ describe User do
     it { should respond_to(:password_confirmation) }
     it { should respond_to(:encrypted_password) }
     it { should respond_to(:email) }
-    it { should respond_to(:first_name) }
-    it { should respond_to(:last_name) }
-    it { should respond_to(:full_name) }
+    it { should respond_to(:name) }
     
     it { should belong_to(:course) }
     it { should have_and_belong_to_many(:batches) }
@@ -86,20 +84,6 @@ describe User do
       end
     end
   
-    context "name" do
-      it "should return full name when both names are given" do
-        expect(@user.full_name).to eq("John Doe")
-      end
-    
-      describe "should return only first name when no second name is given" do
-        before { @user.last_name = "" }
-      
-        it "should return just the first name when no last name" do
-          expect(@user.full_name).to eq("John")
-        end
-      end
-    end
-    
     context "username" do
       context "when already taken" do
         before {
@@ -117,37 +101,6 @@ describe User do
       end
     end
     
-    context "is not a student" do
-      context "with course" do
-        before { @user_with_course = FactoryGirl.build(:student, role: 'user') }
-        subject { @user_with_course }
-      
-        context "should not be valid" do
-          it { should_not be_valid }
-        end
-      end
-    end
-    
-    context "is a student" do
-      context "without course" do
-        before { @student_without_course = FactoryGirl.build(:student_without_course) }
-        subject { @student_without_course }
-      
-        context "should not be valid" do
-          it { should_not be_valid }
-        end
-      end
-      
-      context "with course linked" do
-        before { @student_with_course = FactoryGirl.build(:student) }
-        subject { @student_with_course }
-    
-        context "should be valid" do
-          it { should be_valid }
-        end
-      end
-    end
-  
     context "create" do
       it "should increment the no. of records" do
         expect { @user.save }.to change{User.count}.by(1)
@@ -242,7 +195,7 @@ describe User do
   end
   
   context "as admin" do
-    before { @admin = FactoryGirl.build(:admin) }
+    before { @admin = FactoryGirl.build(:administrator) }
     subject { @admin }
   
     it "should return true for admin?" do

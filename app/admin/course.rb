@@ -1,4 +1,6 @@
 ActiveAdmin.register Course do
+  STATUSES = %w[Active Upcoming Inactive Retired]
+  
   sidebar "Course Details", :only => :show do
     ul do
       li link_to("Installments", admin_course_installments_path(course))
@@ -38,7 +40,7 @@ ActiveAdmin.register Course do
   end
   
   filter :discipline
-  filter :teacher, :collection => User.where(role: 'teacher')
+  filter :teacher, :collection => User.where(type: 'Teacher')
   filter :level
   filter :lessons
   filter :name
@@ -54,10 +56,10 @@ ActiveAdmin.register Course do
       f.input :code
       f.input :description
       f.input :duration, label: "Duration (in weeks)"
-      f.input :status
+      f.input :status, as: :select, collection: STATUSES
       f.input :price
       f.input :tag_list, label: "Tags (separated by commas)"
-      f.input :teacher, :collection => User.where(role: 'teacher')
+      f.input :teacher, :collection => User.where(type: 'Teacher')
     end
     f.actions
   end

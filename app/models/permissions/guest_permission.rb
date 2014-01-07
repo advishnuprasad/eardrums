@@ -9,6 +9,8 @@ module Permissions
       allow_action "static_pages", [:all]
       allow_action "devise/passwords", [:new, :create, :edit, :update]
       allow_action "courses", [:index, :show]
+      allow_action "teachers", [:show, :index]
+      allow_action "students", [:show]
     end
   end
 end

@@ -33,7 +33,7 @@ class Enrollment < ActiveRecord::Base
   belongs_to :course
   belongs_to :discipline
   belongs_to :batch
-  belongs_to :student, -> { where role: 'student' }, class_name: 'User'
+  belongs_to :student, -> { where type: 'Student' }, class_name: 'User'
   belongs_to :creator, class_name: 'User', foreign_key: 'created_by'
   belongs_to :modifier, class_name: 'User', foreign_key: 'modified_by'
   has_many :payments, as: :transactable
@@ -45,6 +45,7 @@ class Enrollment < ActiveRecord::Base
     def build(params)
       Enrollment.new(params).tap do |e|
         e.set_defaults
+        e.enrolled_on ||= Date.today
         e.student = User.build_from_enrollment(e)
         e.student.rolls << Roll.build_from_enrollment(e)
       end
@@ -56,7 +57,6 @@ class Enrollment < ActiveRecord::Base
       self.status = "Active"
       self.txn_status = "Active"
       self.reversal_reason_id = 0
-      self.enrolled_on = Date.today
     end
   end
   
@@ -74,6 +74,19 @@ class Enrollment < ActiveRecord::Base
   
   def txn_reversed?
     txn_status == "Reversed"
+  end
+  
+  def reverse!
+    self.txn_status = "Reversed"
+    
+    self.student.rolls.select { |r| r.course_id == course_id }.each do |r|
+      r.destroy!
+    end
+    
+    self.payments.each do |p|
+      p.reverse!
+    end
+    save!
   end
   
   private

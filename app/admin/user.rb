@@ -1,6 +1,6 @@
 ActiveAdmin.register User do
-  # TODO Refer to ROLES variable within User model
-  ROLES = %w[admin teacher staff student user]
+  # TODO Refer to TYPES variable within User model
+  TYPES = %w[Administrator Teacher Staff Student]
   
   config.clear_action_items! # To clear "New User" link
   
@@ -8,17 +8,15 @@ ActiveAdmin.register User do
     column :email
     column :last_sign_in_at
     column :username
-    column :first_name
-    column :last_name
-    column :role
+    column :name
+    column :type
     default_actions
   end
   
   filter :email
   filter :username
-  filter :first_name
-  filter :last_name
-  filter :role
+  filter :name
+  filter :type
   filter :invited_by_type
   
   form do |f|
@@ -26,10 +24,9 @@ ActiveAdmin.register User do
   
     f.inputs "Details" do
       f.input :email
-      f.input :first_name
-      f.input :last_name
+      f.input :name
       f.input :username
-      f.input :role, as: :select, collection: ROLES.each.map { |x| [x.humanize, x] }
+      f.input :type, as: :select, collection: TYPES
       f.input :branch
       f.input :invitation_limit
     end
@@ -45,7 +42,7 @@ ActiveAdmin.register User do
   end 
  
   collection_action :send_invitation, :method => :post do
-  	@user = User.invite!(params[:user], current_user)
+  	@user = User.invite!(params[:user].merge(confirmed_at: Time.now, skip_invitation: true), current_user)
   	if @user.errors.empty?
   		flash[:success] = "User has been successfully invited." 
   		redirect_to admin_users_path

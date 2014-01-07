@@ -9,8 +9,13 @@ Eardrums::Application.routes.draw do
   get 'contact_us' => 'static_pages#contact_us'
   
   resources :courses
-  resources :enrollments, except: :destroy
+  resources :enrollments, except: :destroy do
+    put 'reverse', on: :member
+  end
   resources :payments
+  resources :teachers
+  resources :staffs
+  resources :students
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

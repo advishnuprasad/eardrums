@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   has_many :identities
   attr_accessor :login
   
-  ROLES = %w[admin teacher staff student user]
+  TYPES = %w[Administrator Teacher Staff Student]
   
   validates_uniqueness_of :username, case_sensitive: false
   validate :students_belong_to_a_course
@@ -22,9 +22,7 @@ class User < ActiveRecord::Base
   has_many :enrollments, foreign_key: "student_id"
   has_many :rolls, foreign_key: "student_id"
   
-  def full_name
-    ([first_name, last_name] - ['']).compact.join(' ')
-  end
+  before_save :set_username
   
   def self.create_from_omniauth(auth)
     identity = Identity.where(auth.slice(:provider, :uid)).first || Identity.from_omniauth(auth)
@@ -84,36 +82,38 @@ class User < ActiveRecord::Base
     self.username = auth["info"].try(:fetch, "nickname", nil) || self.username
     self.email = auth["info"].try(:fetch, "email", nil) || self.email
     self.username = generate_username if self.username.blank? && !self.email.blank?
-    self.first_name = auth["info"].try(:fetch, "first_name", nil) || self.first_name
-    self.last_name = auth["info"].try(:fetch, "last_name", nil) || self.last_name
+    self.name = auth["info"].try(:fetch, "first_name", nil) || self.name
     
     self.identities << identity
   end
   
   def admin?
-    (self.role == "admin")
+    (self.type == "Administrator")
   end
   
   def staff?
-    (self.role == "staff")
+    (self.type == "Staff")
+  end
+  
+  def teacher?
+    (self.type == "Teacher")
+  end
+  
+  def student?
+    (self.type == "Student")
   end
   
   class << self
     def build_from_enrollment(enrollment)
       params = enrollment.attributes.with_indifferent_access
       keys = columns.collect(&:name)
-      attrs = params.select{|k, v| keys.include?(k.to_s)}.merge(
-              first_name: params[:name],
-              email: params[:email],
-              address: params[:address], 
-              course_id: params[:course_id],
-              branch_id: params[:branch_id])
+      attrs = params.select{|k, v| keys.include?(k.to_s)}
             
       new(attrs).tap do |user|
         user.username = user.generate_username
         user.course_id = params[:course_id]
         user.password = ('a'..'z').to_a.shuffle[0,10].join #TEMP
-        user.role = "student"
+        user.type = "Student"
         user.batches << Batch.find(params[:batch_id])
       end
     end
@@ -123,20 +123,28 @@ class User < ActiveRecord::Base
     email[/[^@]+/]
   end
   
+  def confirmation_required?
+    false
+  end
+  
   private
     def students_belong_to_a_course
-      errors.add(:course, " should be associated with a course" ) if self.role == "student" && self.course_id.nil?
+      errors.add(:course, " should be associated with a course" ) if self.type == "Student" && self.course_id.nil?
     end
     
     def non_students_do_not_belong_to_a_course
-      errors.add("non-student", " should not be associated with a course" ) if self.role != "student" && self.course_id.present?
+      errors.add("non-student", " should not be associated with a course" ) if self.type != "Student" && self.course_id.present?
     end
     
     def staff_are_associated_with_branch
-      errors.add(:branch, " should be associated with a branch" ) if self.role == "staff" && self.branch_id.nil?
+      errors.add(:branch, " should be associated with a branch" ) if self.type == "Staff" && self.branch_id.nil?
     end
     
     def staff_are_associated_with_branch
-      errors.add(:branch, " should be associated with a branch" ) if self.role == "staff" && self.branch_id.nil?
+      errors.add(:branch, " should be associated with a branch" ) if self.type == "Staff" && self.branch_id.nil?
+    end
+    
+    def set_username
+      self.username = generate_username if username.blank?
     end
 end

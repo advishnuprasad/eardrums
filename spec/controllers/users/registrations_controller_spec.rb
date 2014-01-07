@@ -17,7 +17,7 @@ describe Users::RegistrationsController do
   end
   
   context 'logged in user' do
-    login_user_before_each
+    login_student_before_each
     
     before(:each) { @user = subject.current_user }
     
@@ -30,7 +30,7 @@ describe Users::RegistrationsController do
       user = mock_model(User)
       User.stub(:find).and_return(user)
       user.should_receive(:update_without_password)
-      patch :update, id: user, user: { first_name: "John Not Doe" }
+      patch :update, id: user, user: { name: "John Not Doe" }
     end
     
     it "can update with password" do
