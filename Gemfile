@@ -127,3 +127,6 @@ gem "awesome_print", "~> 1.1.0"
 
 # DateTime manipulation
 gem "chronic", "~> 0.10.1"
+
+# Delayed jobs
+gem 'delayed_job_active_record'

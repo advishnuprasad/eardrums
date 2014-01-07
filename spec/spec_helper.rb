@@ -65,7 +65,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
+# ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
 OmniAuth.config.test_mode = true
 
@@ -74,7 +74,7 @@ RSpec.configure do |config|
     c.filter_run :focus => true
     c.run_all_when_everything_filtered = true
   end
-  
+
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -102,13 +102,13 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
-  
+
   # For testing Devise Controllers
   config.include Devise::TestHelpers, :type => :controller
-  
+
   config.extend ControllerMacros, :type => :controller
   config.include FeatureMacros, :type => :feature
-  
+
   # Omniauth Test Mode
   config.include OmniauthMacros
   OmniauthMacros.mock_auth_hash
