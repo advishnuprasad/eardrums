@@ -222,13 +222,14 @@ describe User do
   end
 
   context "confirmation email" do
+    before { Delayed::Job.delete_all }
     it "should send confirmation mail after create through delayed job" do
       user = FactoryGirl.build(:user)
       user.save!
-      expect(Delayed::Job.count).to eq(1)
+      expect(Delayed::Job.count).to be > 1
       user = FactoryGirl.build(:user)
       user.save!
-      expect(Delayed::Job.count).to eq(2)
+      expect(Delayed::Job.count).to be > 2
     end
   end
 end

@@ -82,6 +82,9 @@ group :development, :test do
 end
 
 group :development do
+  #Generate ERD
+  gem "rails-erd"
+
   #Guard Goodies
   gem "guard-bundler", "~> 1.0.0"
   gem "guard-rspec", "~> 3.0.2"

@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, :confirmable
+  handle_asynchronously :send_devise_notification, :queue => 'devise'
 
   has_many :identities
   attr_accessor :login
@@ -26,7 +27,7 @@ class User < ActiveRecord::Base
   after_create :send_confirmation_mail
 
   def send_confirmation_mail
-    delay.send_confirmation_instructions
+    send_confirmation_instructions
   end
 
   def self.create_from_omniauth(auth)
