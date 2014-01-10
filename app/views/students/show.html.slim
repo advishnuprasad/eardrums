@@ -1,6 +1,47 @@
-= content_for :title do 
+= content_for :title do
   | Student
-  
+
 .row
   .large-6.columns
     h2 Student Details
+fieldset.rounded
+  legend Personal Details
+  .row
+    .large-12.columns
+      table.rounded
+        thead
+          tr
+            th.text-center width='10%' Discipline
+            th.text-center width='10%' Membership No.
+            th.text-center width='15%' Name
+            th.text-center width='15%' Email
+            th.text-center width='10%' Phone
+            th.text-center width='5%'
+          tr
+            td.text-center width='10%' = @student.course.discipline.name
+            td.text-center width='10%' = @student.membership_no
+            td.text-center width='15%' = @student.name
+            td.text-center width='15%' = @student.email
+            td.text-center width='10%' = @student.phone
+
+fieldset.rounded
+  legend Course Details
+  .row
+    .large-12.columns
+      table.rounded
+        thead
+          tr
+            th.text-center width='10%' Discipline
+            th.text-center width='10%' Course
+            th.text-center width='15%' Batch
+            th.text-center width='15%' Duration
+            th.text-center width='10%' Attended
+            th.text-center width='5%'
+          tr
+            - @student.rolls.each do |roll|
+              td.text-center width='10%' = roll.course.discipline.name
+              td.text-center width='10%' = roll.course.name
+              td.text-center width='20%' = roll.course.discipline.batches.collect {|b| b.timings}.join("<br>").html_safe
+              td.text-center width='15%' = roll.duration
+              td.text-center width='10%' = roll.attended
+

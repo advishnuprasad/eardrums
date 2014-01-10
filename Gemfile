@@ -133,3 +133,7 @@ gem "chronic", "~> 0.10.1"
 
 # Delayed jobs
 gem 'delayed_job_active_record'
+
+# Pagination
+# gem 'will_paginate', '~> 3.0'
+# gem 'foundation-will_paginate'
